@@ -1,6 +1,6 @@
 # Algorithmique-Python
 
-##Jeux :
+#Jeux :
 - plus ou moin
 - Pierre-Feuille-Ciseaux
 - Wordle
