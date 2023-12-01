@@ -16,10 +16,9 @@ def Load_Board(board: list[list[str]]):
     return affiche
 
 def Update_Board(x: int, y: int, board: list[list[str]], Player: str):
-        if (x-1) >= len(board):
+        if x < 0 or y < 0 or x >= len(board) or y >= len(board):
             print("Erreur")
-        elif (y-1) >= len(board):
-            print("Erreur")
+            return
         else:
             if board[x][y] == " ":
                 board[x][y] = Player
@@ -38,35 +37,35 @@ def Update_User(board: list[list[str]]):
 def Update_IA(board: list[list[str]], win_length: int = 3) -> tuple[int, int]:
     # IA can Win
     for row in range(len(board)):
-        for col in range(len(board[row])):
+        for col in range(len(board)):
             if board[row][col] == " ":
                 board[row][col] = "O"
                 if CheckWin(row, col, "O", board, win_length):
-                    board[row][col] = "O"
-                    print("IA play Win")
+                    print("IA can Win")
                     return row, col
                 else:
                     board[row][col] = " "
     # IA can Block
     else:
         for row in range(len(board)):
-            for col in range(len(board[row])):
+            for col in range(len(board)):
                 if board[row][col] == " ":
                     board[row][col] = "X"
                     if CheckWin(row, col, "X", board, win_length):
                         board[row][col] = "O"
-                        print("IA play Block")
+                        print("IA can Block")
                         return row, col
                     else:
                         board[row][col] = " "
     # IA play random
-    while True:
-        IA_Coord_x, IA_Coord_y = choice(find_empty_strings(board))
-        
-        if Update_Board(IA_Coord_x, IA_Coord_y, board, "O") != None:
-            board = Update_Board(IA_Coord_x, IA_Coord_y, board, "O")
-            print("IA play random")
-            return IA_Coord_x, IA_Coord_y
+    empty_cells = [(i, j) for i in range(len(board)) for j in range(len(board[i])) if board[i][j] == " "]
+    if empty_cells:
+        choice_IA = choice(empty_cells)
+        board = Update_Board(choice_IA[0], choice_IA[1], board, "O")
+        print("IA play randomly")
+        return choice_IA
+    else:
+        return None
 
 def check_coordinates(board, x, y):
     if x < 0 or y < 0 or x >= len(board)-1 or y >= len(board)-1:
@@ -113,16 +112,16 @@ def check_column(x: int, y: int, player: str, board, win_length: int = 3):
 def check_left_diagonal(x: int, y: int, player: str, board, win_length: int = 3):
     compteur = 1
     for i in range(1, win_length):
-        if check_coordinates(board, x-i, y-i) == False:
+        if check_coordinates(board, x+i, y+i) == False:
             continue
-        if board[x-i][y-i] == player:
+        if board[x+i][y+i] == player:
             compteur += 1
         else:
             break
     for i in range(1, win_length):
-        if check_coordinates(board, x+i, y+i) == False:
+        if check_coordinates(board, x-i, y-i) == False:
             continue
-        if board[x+i][y+i] == player:
+        if board[x-i][y-i] == player:
             compteur += 1
         else:
             break
@@ -131,16 +130,16 @@ def check_left_diagonal(x: int, y: int, player: str, board, win_length: int = 3)
 def check_right_diagonal(x: int, y: int, player: str, board, win_length: int = 3):
     compteur = 1
     for i in range(1, win_length):
-        if check_coordinates(board, x+1, y-1) == False:
+        if check_coordinates(board, x-i, y+i) == False:
             continue
-        if board[x+1][y-1] == player:
+        if board[x-i][y+i] == player:
             compteur += 1
         else:
             break
     for i in range(1, win_length):
-        if check_coordinates(board, x-1, y+1) == False:
+        if check_coordinates(board, x+i, y-i) == False:
             continue
-        if board[x-i][y+1] == player:
+        if board[x+i][y-i] == player:
             compteur += 1
         else:
             break
@@ -169,38 +168,70 @@ def CheckEqual(board):
 def find_empty_strings(list):
     return [(i, j) for i in range(len(list)) for j in range(len(list[i])) if list[i][j] == " "]
 
-def Game():
-    board = Create_Board(T.AskInt("Choisir une taille pour la grille de morpion"))
-    win_length = T.AskInt("Combien de symboles à alignés pour gagner ?")
+# def Game():
+#     board = Create_Board(T.AskInt("Choisir une taille pour la grille de morpion"))
+#     win_length = T.AskInt("Combien de symboles à alignés pour gagner ?")
 
-    while True:
-        print(find_empty_strings(board))  # Output: array of tuples (row, col) of empty cells
-        print(Load_Board(board))
+#     while True:
+#         print(Load_Board(board))
 
-        x, y = Update_User(board)
+#         x, y = Update_User(board)
 
-        if CheckWin(x, y, "X", board, win_length):
-            print(Load_Board(board))
-            print("X's Win !")
-            break
+#         if CheckWin(x, y, "X", board, win_length):
+#             print(Load_Board(board))
+#             print("X's Win !")
+#             break
         
-        if CheckEqual(board):
-            print(Load_Board(board))
-            print ("Égalité")
-            break
+#         if CheckEqual(board):
+#             print(Load_Board(board))
+#             print ("Égalité")
+#             break
         
-        #-------------------------------------------------------------------------
+#         #-------------------------------------------------------------------------
         
-        IA_Coord_x, IA_Coord_y = Update_IA(board, win_length)
+#         IA_Coord_x, IA_Coord_y = Update_IA(board, win_length)
         
-        if CheckWin(IA_Coord_x, IA_Coord_y, "O", board, win_length):
-            print(Load_Board(board))
-            print("O's Win !")
-            break
+#         if CheckWin(IA_Coord_x, IA_Coord_y, "O", board, win_length):
+#             print(Load_Board(board))
+#             print("O's Win !")
+#             break
         
-        if CheckEqual(board):
-            print(Load_Board(board))
-            print ("Égalité")
-            break
+#         if CheckEqual(board):
+#             print(Load_Board(board))
+#             print ("Égalité")
+#             break
+# Game()
 
-Game()
+def test_CheckWin():
+    # Test case 1: Horizontal win
+    board = [['X', 'X', 'X'],
+             ['O', 'O', ''],
+             ['', '', '']]
+    assert CheckWin(0, 0, 'X', board) == True
+
+    # Test case 2: Vertical win
+    board = [['X', 'O', ''],
+             ['X', 'O', ''],
+             ['X', '', '']]
+    assert CheckWin(2, 0, 'X', board) == True
+
+    # Test case 3: Left diagonal win
+    board = [['X', 'O', ''],
+             ['O', 'X', ''],
+             ['', '', 'X']]
+    assert CheckWin(2, 2, 'X', board) == True
+
+    # Test case 4: Right diagonal win
+    board = [['', 'O', 'X'],
+             ['O', 'X', ''],
+             ['X', '', '']]
+    assert CheckWin(0, 2, 'X', board) == True
+
+    # Test case 5: No win
+    board = [['X', 'O', 'X'],
+             ['O', 'X', ''],
+             ['', 'X', 'O']]
+    assert CheckWin(1, 1, 'X', board) == False
+
+    print("All test cases pass")
+test_CheckWin()
