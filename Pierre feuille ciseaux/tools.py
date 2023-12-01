@@ -2,7 +2,8 @@ def print_result(ordinateur, j, player, ia):
     # Définition des résultats possibles et des conséquences sur les scores
     results = {
         # 1er colonne pour la réponse de l'ordinateur, la 2nd pour la réponse fournie par le joueur
-        # Comparaison des données fournie par l'ordinateur et du joueur pour afficher la réponse correcte et le bon ajout de points        ("Pierre", 'Pierre'): ("Égalité", 0, 0),
+        # Comparaison des données fournie par l'ordinateur et du joueur pour afficher la réponse correcte et le bon ajout de points        
+        ("Pierre", 'Pierre'): ("Égalité", 0, 0),
         ("Pierre", 'Feuille'): ("Victoire", 1, 0),
         ("Pierre", 'Ciseaux'): ("Perdu", 0, 1),
         ("Feuille", 'Pierre'): ("Perdu", 0, 1),
